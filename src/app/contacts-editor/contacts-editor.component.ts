@@ -6,6 +6,7 @@ import { ApplicationState } from '../state/app.state';
 import { Store } from '@ngrx/store';
 import { SelectContactAction, UpdateContactAction } from '../state/contacts/contacts.actions';
 import { Observable } from 'rxjs/Observable';
+import { map } from 'rxjs/operators/map';
 
 @Component({
   selector: 'trm-contacts-editor',
@@ -15,7 +16,7 @@ import { Observable } from 'rxjs/Observable';
 export class ContactsEditorComponent implements OnInit {
 
   // we need to initialize since we can't use ?. operator with ngModel
-  contact: Contact = <Contact>{ address: {}};
+  // contact: Contact = <Contact>{ address: {}};
   contact$: Observable<any>;
 
   constructor(private contactsService: ContactsService,
@@ -25,20 +26,16 @@ export class ContactsEditorComponent implements OnInit {
 
   ngOnInit() {
     let contactId = this.route.snapshot.paramMap.get('id');
-    
     this.store.dispatch(new SelectContactAction(+contactId));
   
     this.contact$ = this.store.select(state => {
       let id = state.contacts.selectedContactId;
       let contact = state.contacts.list.find(contact =>
         contact.id == id);
-      return Object.assign({}, contact);
-    });
-    
-    this.contactsService.getContact(contactId)
-                        .subscribe(contact =>  this.contact = contact);
-    
-    
+      return contact;
+    }).pipe(
+      map(contact =>({...contact })
+    ));    
   }
 
   cancel(contact: Contact) {
@@ -47,8 +44,11 @@ export class ContactsEditorComponent implements OnInit {
 
   save(contact: Contact) {  
    this.contactsService.updateContact(contact)
-                       .subscribe(() => this.goToDetails(contact));
-  this.store.dispatch(new UpdateContactAction(contact));
+                       .subscribe(() => {
+                      this.store.dispatch(new UpdateContactAction(contact));
+                       this.goToDetails(contact)}
+                      );
+   
   }
 
   private goToDetails(contact: Contact) {

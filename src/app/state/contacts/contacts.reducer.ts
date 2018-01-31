@@ -8,7 +8,7 @@ export interface ContactsState {
 
 const INITIAL_STATE: ContactsState = {
   list: [],
-  selectedContactId: 0
+  selectedContactId: null
 }
 
 export function contactsReducer(
