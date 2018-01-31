@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Angular Master Class
 
 This repository contains all the **Lab Solutions** for the Angular Master Class courseware by thoughtram.
@@ -75,3 +76,6 @@ $ npm run rest-api
 Have fun and good luck!
 
 Christoph & Pascal & Thomas
+=======
+# ngrxTraining
+>>>>>>> origin/master
